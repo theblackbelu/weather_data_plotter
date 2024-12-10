@@ -1,12 +1,22 @@
+import { weatherData, calculateMovingAverage } from './weatherData.js';
+
 class WeatherCharts {
     constructor() {
         this.charts = {};
     }
 
-    // Create temperature chart with trend line
+    // Initialize all charts
+    initCharts() {
+        this.createTemperatureChart();
+        this.createHumidityChart();
+        this.createPrecipitationChart();
+        this.createCombinedChart();
+    }
+
+    // Temperature chart with trend line
     createTemperatureChart() {
         const ctx = document.getElementById('temperatureChart').getContext('2d');
-        const trendLine = calculateTrend(weatherData.temperatures);
+        const tempTrend = calculateMovingAverage(weatherData.temperatures);
         
         this.charts.temperature = new Chart(ctx, {
             type: 'line',
@@ -23,11 +33,11 @@ class WeatherCharts {
                     },
                     {
                         label: 'Temperature Trend',
-                        data: trendLine,
+                        data: tempTrend,
                         borderColor: 'rgb(255, 0, 0)',
                         borderDash: [5, 5],
-                        fill: false,
-                        pointRadius: 0
+                        tension: 0.4,
+                        fill: false
                     }
                 ]
             },
@@ -36,7 +46,7 @@ class WeatherCharts {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Temperature Trends'
+                        text: 'Temperature Over Time'
                     }
                 },
                 scales: {
@@ -52,10 +62,10 @@ class WeatherCharts {
         });
     }
 
-    // Create humidity chart
+    // Humidity chart
     createHumidityChart() {
         const ctx = document.getElementById('humidityChart').getContext('2d');
-        const trendLine = calculateTrend(weatherData.humidity);
+        const humidityTrend = calculateMovingAverage(weatherData.humidity);
         
         this.charts.humidity = new Chart(ctx, {
             type: 'line',
@@ -72,11 +82,11 @@ class WeatherCharts {
                     },
                     {
                         label: 'Humidity Trend',
-                        data: trendLine,
+                        data: humidityTrend,
                         borderColor: 'rgb(0, 0, 255)',
                         borderDash: [5, 5],
-                        fill: false,
-                        pointRadius: 0
+                        tension: 0.4,
+                        fill: false
                     }
                 ]
             },
@@ -85,13 +95,14 @@ class WeatherCharts {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Humidity Trends'
+                        text: 'Humidity Over Time'
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: false,
-                        max: 100,
+                        min: 60,
+                        max: 80,
                         title: {
                             display: true,
                             text: 'Humidity (%)'
@@ -102,7 +113,7 @@ class WeatherCharts {
         });
     }
 
-    // Create precipitation chart
+    // Precipitation chart (bar chart)
     createPrecipitationChart() {
         const ctx = document.getElementById('precipitationChart').getContext('2d');
         
@@ -139,12 +150,72 @@ class WeatherCharts {
         });
     }
 
-    // Initialize all charts
-    init() {
-        this.createTemperatureChart();
-        this.createHumidityChart();
-        this.createPrecipitationChart();
+    // Combined chart showing all metrics
+    createCombinedChart() {
+        const ctx = document.getElementById('combinedChart').getContext('2d');
+        
+        this.charts.combined = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: weatherData.dates,
+                datasets: [
+                    {
+                        label: 'Temperature (°C)',
+                        data: weatherData.temperatures,
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        yAxisID: 'y',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Humidity (%)',
+                        data: weatherData.humidity,
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        yAxisID: 'y1',
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                stacked: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Temperature & Humidity Comparison'
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Humidity (%)'
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    }
+                }
+            }
+        });
     }
 }
 
-window.WeatherCharts = WeatherCharts;
+export default WeatherCharts;
