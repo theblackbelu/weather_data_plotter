@@ -8,111 +8,84 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
+            margin: 0;
             padding: 20px;
             background-color: #f5f5f5;
         }
         .container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
         }
         .chart-container {
-            height: 400px;
-            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
+            text-align: center;
             margin-bottom: 20px;
         }
         button {
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: white;
+            background-color: #4CAF50;
             border: none;
-            border-radius: 4px;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
             cursor: pointer;
+            border-radius: 4px;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .data-form {
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-        input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        h1, h2, h3 {
-            color: #333;
-        }
-        #trends {
-            background-color: #e9f7fe;
-            padding: 15px;
-            border-radius: 4px;
-            border-left: 4px solid #007bff;
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Weather Data Visualization</h1>
-    
     <div class="container">
-        <h2>Controls</h2>
+        <div class="header">
+            <h1>Weather Data Visualization</h1>
+            <p>Historical weather data with trend analysis</p>
+        </div>
+        
         <div class="controls">
-            <button id="plotTemperature">Temperature Trend</button>
-            <button id="plotAll">All Metrics</button>
-            <button id="plotPrecipitation">Precipitation</button>
-            <button id="showTrends">Show Trends</button>
-            <button id="clearData" style="background-color: #dc3545;">Clear Data</button>
+            <button id="refreshData">Refresh Data</button>
+            <button id="exportData">Export Data</button>
         </div>
 
-        <h3>Add New Data Point</h3>
-        <div class="data-form">
-            <input type="date" id="newDate" placeholder="Date">
-            <input type="number" id="newTemp" placeholder="Temperature (°C)" step="0.1">
-            <input type="number" id="newHumidity" placeholder="Humidity (%)" step="0.1" min="0" max="100">
-            <input type="number" id="newPrecipitation" placeholder="Precipitation (mm)" step="0.1" min="0">
-            <button id="addData">Add Data</button>
+        <div class="grid">
+            <div class="chart-container">
+                <canvas id="temperatureChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="humidityChart"></canvas>
+            </div>
         </div>
-    </div>
 
-    <div class="container">
-        <h2>Temperature Trend</h2>
-        <div class="chart-container">
-            <canvas id="temperatureChart"></canvas>
-        </div>
-    </div>
-
-    <div class="container">
-        <h2>All Weather Metrics</h2>
-        <div class="chart-container">
-            <canvas id="allMetricsChart"></canvas>
-        </div>
-    </div>
-
-    <div class="container">
-        <h2>Precipitation</h2>
         <div class="chart-container">
             <canvas id="precipitationChart"></canvas>
         </div>
+
+        <div class="chart-container">
+            <canvas id="combinedChart"></canvas>
+        </div>
     </div>
 
-    <div class="container">
-        <div id="trends"></div>
-    </div>
-
-    <script src="weather-data.js"></script>
-    <script src="weather-charts.js"></script>
-    <script src="weather-app.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
