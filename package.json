@@ -1,0 +1,13 @@
+{
+  "name": "weather-data-visualization",
+  "version": "1.0.0",
+  "description": "A simple JavaScript application to plot weather data and trends",
+  "type": "module",
+  "scripts": {
+    "dev": "npx http-server . -p 3000",
+    "start": "npx http-server ."
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
