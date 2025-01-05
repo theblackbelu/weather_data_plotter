@@ -1,19 +1,23 @@
-import { weatherData, calculateMovingAverage } from './weatherData.js';
-
 class WeatherCharts {
     constructor() {
         this.charts = {};
+        this.initializeCharts();
     }
 
-    // Initialize all charts
-    initCharts() {
+    initializeCharts() {
+        // Temperature Chart
         this.createTemperatureChart();
+        
+        // Humidity Chart
         this.createHumidityChart();
+        
+        // Precipitation Chart
         this.createPrecipitationChart();
-        this.createCombinedChart();
+        
+        // Combined Trends Chart
+        this.createTrendsChart();
     }
 
-    // Temperature chart with trend line
     createTemperatureChart() {
         const ctx = document.getElementById('temperatureChart').getContext('2d');
         const tempTrend = calculateMovingAverage(weatherData.temperatures);
@@ -24,20 +28,20 @@ class WeatherCharts {
                 labels: weatherData.dates,
                 datasets: [
                     {
-                        label: 'Temperature (°C)',
+                        label: 'Temperature (°F)',
                         data: weatherData.temperatures,
                         borderColor: 'rgb(255, 99, 132)',
                         backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                        tension: 0.4,
+                        tension: 0.1,
                         fill: true
                     },
                     {
-                        label: 'Temperature Trend',
+                        label: 'Temperature Trend (3-day avg)',
                         data: tempTrend,
                         borderColor: 'rgb(255, 0, 0)',
                         borderDash: [5, 5],
-                        tension: 0.4,
-                        fill: false
+                        fill: false,
+                        pointRadius: 0
                     }
                 ]
             },
@@ -46,7 +50,7 @@ class WeatherCharts {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Temperature Over Time'
+                        text: 'Daily Temperature with Trend'
                     }
                 },
                 scales: {
@@ -54,7 +58,7 @@ class WeatherCharts {
                         beginAtZero: false,
                         title: {
                             display: true,
-                            text: 'Temperature (°C)'
+                            text: 'Temperature (°F)'
                         }
                     }
                 }
@@ -62,7 +66,6 @@ class WeatherCharts {
         });
     }
 
-    // Humidity chart
     createHumidityChart() {
         const ctx = document.getElementById('humidityChart').getContext('2d');
         const humidityTrend = calculateMovingAverage(weatherData.humidity);
@@ -77,16 +80,16 @@ class WeatherCharts {
                         data: weatherData.humidity,
                         borderColor: 'rgb(54, 162, 235)',
                         backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                        tension: 0.4,
+                        tension: 0.1,
                         fill: true
                     },
                     {
-                        label: 'Humidity Trend',
+                        label: 'Humidity Trend (3-day avg)',
                         data: humidityTrend,
                         borderColor: 'rgb(0, 0, 255)',
                         borderDash: [5, 5],
-                        tension: 0.4,
-                        fill: false
+                        fill: false,
+                        pointRadius: 0
                     }
                 ]
             },
@@ -95,14 +98,13 @@ class WeatherCharts {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Humidity Over Time'
+                        text: 'Daily Humidity with Trend'
                     }
                 },
                 scales: {
                     y: {
-                        beginAtZero: false,
-                        min: 60,
-                        max: 80,
+                        beginAtZero: true,
+                        max: 100,
                         title: {
                             display: true,
                             text: 'Humidity (%)'
@@ -113,7 +115,6 @@ class WeatherCharts {
         });
     }
 
-    // Precipitation chart (bar chart)
     createPrecipitationChart() {
         const ctx = document.getElementById('precipitationChart').getContext('2d');
         
@@ -122,7 +123,7 @@ class WeatherCharts {
             data: {
                 labels: weatherData.dates,
                 datasets: [{
-                    label: 'Precipitation (mm)',
+                    label: 'Precipitation (inches)',
                     data: weatherData.precipitation,
                     backgroundColor: 'rgba(75, 192, 192, 0.6)',
                     borderColor: 'rgba(75, 192, 192, 1)',
@@ -142,7 +143,7 @@ class WeatherCharts {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Precipitation (mm)'
+                            text: 'Precipitation (inches)'
                         }
                     }
                 }
@@ -150,30 +151,27 @@ class WeatherCharts {
         });
     }
 
-    // Combined chart showing all metrics
-    createCombinedChart() {
-        const ctx = document.getElementById('combinedChart').getContext('2d');
+    createTrendsChart() {
+        const ctx = document.getElementById('trendsChart').getContext('2d');
         
-        this.charts.combined = new Chart(ctx, {
+        this.charts.trends = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: weatherData.dates,
                 datasets: [
                     {
-                        label: 'Temperature (°C)',
-                        data: weatherData.temperatures,
+                        label: 'Temperature Trend',
+                        data: calculateMovingAverage(weatherData.temperatures),
                         borderColor: 'rgb(255, 99, 132)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                        yAxisID: 'y',
-                        tension: 0.4
+                        fill: false,
+                        yAxisID: 'y'
                     },
                     {
-                        label: 'Humidity (%)',
-                        data: weatherData.humidity,
+                        label: 'Humidity Trend',
+                        data: calculateMovingAverage(weatherData.humidity),
                         borderColor: 'rgb(54, 162, 235)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                        yAxisID: 'y1',
-                        tension: 0.4
+                        fill: false,
+                        yAxisID: 'y1'
                     }
                 ]
             },
@@ -183,11 +181,10 @@ class WeatherCharts {
                     mode: 'index',
                     intersect: false,
                 },
-                stacked: false,
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Temperature & Humidity Comparison'
+                        text: 'Weather Trends Comparison'
                     }
                 },
                 scales: {
@@ -197,7 +194,7 @@ class WeatherCharts {
                         position: 'left',
                         title: {
                             display: true,
-                            text: 'Temperature (°C)'
+                            text: 'Temperature (°F)'
                         }
                     },
                     y1: {
@@ -218,4 +215,7 @@ class WeatherCharts {
     }
 }
 
-export default WeatherCharts;
+// Initialize charts when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    window.weatherCharts = new WeatherCharts();
+});
