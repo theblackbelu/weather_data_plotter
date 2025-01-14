@@ -1,69 +1,54 @@
-## How to Use the Weather Data Visualization Application
+## Weather Data Visualization System
 
-### Prerequisites
-- A modern web browser that supports ES6 modules
-- Node.js (optional, for local development server)
+A simple JavaScript application for plotting weather data and trends using Chart.js.
 
-### Setup Instructions
+### Files Structure:
+- `index.html` - Main HTML file with chart containers
+- `weatherData.js` - Contains sample weather data and utility functions
+- `weatherCharts.js` - Chart creation and management class
+- `dataLoader.js` - Utility for loading and generating weather data
 
-1. **Clone or download all files** into the same directory:
-   - `weatherData.js`
-   - `weatherCharts.js`
-   - `main.js`
-   - `index.html`
-   - `package.json`
+### How to Use:
 
-2. **Quick Start** (Method 1 - Direct File Opening):
-   - Simply open `index.html` in your web browser
-   - Note: Some browsers may have restrictions when opening local files with modules
+1. **Basic Setup:**
+   - Place all files in the same directory
+   - Open `index.html` in a web browser
+   - The application will automatically load with sample data
 
-3. **Development Server** (Method 2 - Recommended):
-   ```bash
-   # Install http-server if you don't have it
-   npm install -g http-server
-   
-   # Navigate to the project directory and run
-   http-server -p 3000
-   
-   # Or use the provided script
-   npm run dev
-   ```
-   - Open your browser and go to `http://localhost:3000`
-
-### Features
-
-- **Temperature Chart**: Line chart showing temperature with trend line
-- **Humidity Chart**: Line chart showing humidity with trend line
-- **Precipitation Chart**: Bar chart showing daily precipitation
-- **Combined Chart**: Dual-axis chart comparing temperature and humidity
-- **Interactive Controls**: Refresh and export buttons
-- **Responsive Design**: Works on desktop and mobile devices
-
-### Customizing Data
-
-To use your own weather data, modify the `weatherData` object in `weatherData.js`:
+2. **Using Your Own Data:**
+   - Modify the `weatherData` object in `weatherData.js`
+   - Or use the `WeatherDataLoader` class to load CSV data:
 
 ```javascript
-const weatherData = {
-    dates: ['your-dates-here'],
-    temperatures: [your-temperatures],
-    humidity: [your-humidity-values],
-    precipitation: [your-precipitation-values]
-};
+// Example CSV format:
+// date,temperature,humidity,precipitation
+// 2024-01-01,32,65,0.1
+// 2024-01-02,35,70,0.0
+
+const csvData = `date,temperature,humidity,precipitation
+2024-01-01,32,65,0.1
+2024-01-02,35,70,0.0`;
+
+WeatherDataLoader.loadFromCSV(csvData).then(data => {
+    window.weatherData = data;
+    // Refresh charts with new data
+    window.weatherCharts.initializeCharts();
+});
 ```
 
-### Adding New Features
+3. **Features:**
+   - Temperature chart with 3-day moving average trend line
+   - Humidity chart with trend analysis
+   - Precipitation bar chart
+   - Combined trends comparison chart
+   - Responsive design
 
-- To add new weather metrics, extend the `weatherData` object and create new chart methods in `WeatherCharts` class
-- For real-time data, implement API calls in the `refreshData` event handler
-- Modify chart styles and options in the `weatherCharts.js` file
+4. **Customization:**
+   - Modify chart colors in `weatherCharts.js`
+   - Change moving average window size in `calculateMovingAverage()` function
+   - Add new weather parameters by extending the data structure
 
-### Browser Compatibility
+### Dependencies:
+- Chart.js (loaded via CDN in index.html)
 
-This application uses modern JavaScript features (ES6 modules) and requires a relatively recent browser:
-- Chrome 61+
-- Firefox 60+
-- Safari 10.1+
-- Edge 16+
-
-The application will automatically display all charts when the page loads and includes trend analysis using moving averages for better data visualization.
+The application provides a clean, interactive visualization of weather data with trend analysis using moving averages to identify patterns over time.
